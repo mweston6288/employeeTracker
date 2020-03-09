@@ -60,5 +60,18 @@ function addDepartment(){
         {
             name: response.name
         })
+        inquirer.prompt({
+            name: "response",
+            type: "list",
+            message: "Add another department?",
+            choices: ["Yes", "No"]
+        }).then(function(response){
+            if (response.response === "Yes"){
+                addDepartment();
+            }
+            else{
+                menu();
+            }
+        })
     })
 }
