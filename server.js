@@ -35,6 +35,8 @@ function menu(){
     }).then(function(answer){
         switch(answer.response){
             case "Add department":
+                addDepartment();
+                break;
             case "Add role":
             case "Add employee":
             case "View departments":
@@ -45,6 +47,18 @@ function menu(){
                 connection.end();
                 break;
         }
-        console.log(answer.response)
+    })
+}
+// Add a new department to the database
+function addDepartment(){
+    inquirer.prompt({
+        name: "name",
+        type: "input",
+        message: "Department name:"
+    }).then(function(response){
+        connection.query("INSERT INTO department SET ?",
+        {
+            name: response.name
+        })
     })
 }
