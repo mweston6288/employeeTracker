@@ -53,6 +53,8 @@ function menu(){
                 viewEmployee();
                 break;
             case "Update employee roles":
+                updateEmployee();
+                break;
             case "exit":
                 connection.end();
         }
@@ -210,4 +212,44 @@ function viewEmployee(){
             menu();
         })
     })
+}
+// Needs work. Figure out how to link user id to the arrays
+function updateEmployee(){
+    connection.query("SELECT first_name, last_name FROM employee", function(err,res){
+        const array = [];
+        res.forEach(function(id){
+            array.push(id.first_name +  " " + id.last_name);
+        })
+        inquirer.prompt({
+            name: "response",
+            type: "list",
+            message:"Select employee",
+            choices: array
+        }).then(function(response){
+            inquirer.prompt([
+                {
+                    name: "role",
+                    message: "What is their role ID?",
+                    type: "input"
+                },
+                {
+                    name: "manager",
+                    message: "What is their manager's ID?",
+                    type: "input"
+                }
+            ]).then(function(res){
+                connection.query("UPDATE employee SET ? WHERE ?", [{
+                    role_id: res.role,
+                    manager_id: res.manager
+                },
+                {
+                    name:response.response
+                }
+            ], function(err,res){
+                    menu();
+                })
+            })
+        })
+    })
+
 }
