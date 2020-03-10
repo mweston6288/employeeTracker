@@ -47,11 +47,14 @@ function menu(){
                 viewDepartment();
                 break;
             case "View roles":
+                viewRole();
+                break;
             case "View employees":
+                viewEmployee();
+                break;
             case "Update employee roles":
             case "exit":
                 connection.end();
-                break;
         }
     })
 }
@@ -171,6 +174,34 @@ function viewDepartment(){
     connection.query("SELECT * FROM department", function(err,res){
         if(err) throw err;
         console.table('departments', table.getTable(res))
+        inquirer.prompt({
+            name: "Enter",
+            message: "Press any key to return",
+            type: "input"
+        }).then(function(){
+            menu();
+        })
+    })
+}
+
+function viewRole(){
+    connection.query("SELECT role.id, title, salary, department.name FROM role LEFT JOIN department ON role.department_id = department.id", function(err,res){
+        if(err) throw err;
+        console.table('Roles', table.getTable(res))
+        inquirer.prompt({
+            name: "Enter",
+            message: "Press any key to return",
+            type: "input"
+        }).then(function(){
+            menu();
+        })
+    })
+}
+
+function viewEmployee(){
+    connection.query("SELECT employee.id, first_name, last_name, role.title, manager_id FROM employee LEFT JOIN role ON role.id = employee.role_id", function(err,res){
+        if(err) throw err;
+        console.table('Roles', table.getTable(res))
         inquirer.prompt({
             name: "Enter",
             message: "Press any key to return",
