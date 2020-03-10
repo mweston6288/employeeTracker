@@ -44,6 +44,8 @@ function menu(){
                 addEmployee();
                 break;
             case "View departments":
+                viewDepartment();
+                break;
             case "View roles":
             case "View employees":
             case "Update employee roles":
@@ -162,6 +164,19 @@ function addEmployee(){
             else{
                 menu();
             }
+        })
+    })
+}
+function viewDepartment(){
+    connection.query("SELECT * FROM department", function(err,res){
+        if(err) throw err;
+        console.table('departments', table.getTable(res))
+        inquirer.prompt({
+            name: "Enter",
+            message: "Press any key to return",
+            type: "input"
+        }).then(function(){
+            menu();
         })
     })
 }
