@@ -1,7 +1,8 @@
 ## employeeTracker
 
 ## TODO
-Rewrite prompts for department, manager and role ids to be lists instead of inputs
+* Rewrite view employess to get more complet data
+* Reorganize functions for better legibility and less clutter
 
 ## Known issues
 
