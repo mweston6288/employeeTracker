@@ -93,6 +93,7 @@ function addDepartment(){
 // Add a new department to the database
 function addRole(){
     connection.query("SELECT * FROM department", function(err,res){
+        departments = [];
         res.forEach(function(department){
             departments.push(department.id + " " + department.name);
         })
@@ -138,6 +139,12 @@ function addRole(){
     })
 }// Add a new department to the database
 function addEmployee(){
+    roles = [];
+    connection.query("SELECT role.id, title, salary, department.name FROM role LEFT JOIN department ON role.department_id = department.id", function(err, response){
+        response.forEach(function(role){
+            roles.push(role.id + " " + role.title+ " " +role.name)
+        })
+    })
     inquirer.prompt([
         {
             name: "firstName",
@@ -151,8 +158,9 @@ function addEmployee(){
         },
         {
             name: "roleID",
-            type: "input",
-            message: "Employee role ID:"
+            type: "list",
+            message: "Employee role:",
+            choices: roles
         },
         {
             name: "managerID",
@@ -161,11 +169,12 @@ function addEmployee(){
         },
 
     ]).then(function(response){
+        const roleID = response.roleID.split(" ");
         connection.query("INSERT INTO employee SET ?",
         {
             first_name: response.firstName,
             last_name: response.lastName,
-            role_id: response.roleID,
+            role_id: roleID[0],
             manager_id: response.managerID
         })
         inquirer.prompt({
