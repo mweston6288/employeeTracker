@@ -145,6 +145,13 @@ function addEmployee(){
             roles.push(role.id + " " + role.title+ " " +role.name)
         })
     })
+    managers = [];
+    connection.query("SELECT employee.id, first_name, last_name, department.name, role.title FROM employee LEFT JOIN role JOIN department ON role.department_id = department.id ON employee.role_id = role.id Where role.title = 'manager'",
+    function(err,res){
+        res.forEach(function(employee){
+            managers.push(employee.id + " " + employee.first_name + " "+employee.last_name + " "+employee.name);
+        })        
+    })
     inquirer.prompt([
         {
             name: "firstName",
@@ -164,18 +171,20 @@ function addEmployee(){
         },
         {
             name: "managerID",
-            type: "input",
-            message: "Manager ID:"
+            type: "list",
+            message: "Manager:",
+            choices: managers
         },
 
     ]).then(function(response){
         const roleID = response.roleID.split(" ");
+        const managerID = response.managerID.split(" ");
         connection.query("INSERT INTO employee SET ?",
         {
             first_name: response.firstName,
             last_name: response.lastName,
             role_id: roleID[0],
-            manager_id: response.managerID
+            manager_id: managerID[0]
         })
         inquirer.prompt({
             name: "response",

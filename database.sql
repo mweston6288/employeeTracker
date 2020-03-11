@@ -28,10 +28,16 @@ CREATE TABLE employee(
 );
 
 INSERT INTO department (name)
-VALUES ("test"), ("test2");
+VALUES ("Sales"), ("Tech support");
 
 INSERT INTO role (title, salary, department_id)
-VALUES ("Manager", 15.43, 1), ("person", 15.43, 2);
+VALUES ("Manager", 15.43, 1), ("manager", 15.43, 2);
 
 INSERT INTO employee(first_name, last_name, role_id, manager_id)
-VALUES ("Larry", "Smith", 2, 1), ("John", "Doe", 2, 1);
+VALUES ("Larry", "Smith", 2, 1), ("John", "Doe", 1, 1);
+
+
+SELECT first_name,last_name, department.name, role.title FROM employee
+LEFT JOIN role JOIN department 
+ON role.department_id = department.id ON employee.role_id = role.id
+Where role.id = "manager";
