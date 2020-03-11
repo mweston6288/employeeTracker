@@ -215,10 +215,10 @@ function viewEmployee(){
 }
 // Needs work. Figure out how to link user id to the arrays
 function updateEmployee(){
-    connection.query("SELECT first_name, last_name FROM employee", function(err,res){
+    connection.query("SELECT employee.id, first_name, last_name FROM employee", function(err,res){
         const array = [];
         res.forEach(function(id){
-            array.push(id.first_name +  " " + id.last_name);
+            array.push(id.id + " " + id.first_name +  " " + id.last_name);
         })
         inquirer.prompt({
             name: "response",
@@ -226,6 +226,8 @@ function updateEmployee(){
             message:"Select employee",
             choices: array
         }).then(function(response){
+            const empID = response.response.split(" ");
+            console.log(empID)
             inquirer.prompt([
                 {
                     name: "role",
@@ -243,7 +245,7 @@ function updateEmployee(){
                     manager_id: res.manager
                 },
                 {
-                    name:response.response
+                    id:empID[0]
                 }
             ], function(err,res){
                     menu();

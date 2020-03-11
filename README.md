@@ -1,7 +1,7 @@
 ## employeeTracker
 
 ## TODO
-Add elements in switch statements
+Rewrite prompts for department, manager and role ids to be lists instead of inputs
 
 ## Known issues
-Update Employee is not working correctly, array name is dissociated from id
+
