@@ -12,6 +12,10 @@ const connection = mysql.createConnection({
     database: "employeesDB"
 });
 
+let departments = [];
+let roles = [];
+let managers = [];
+
 connection.connect(function(err){
     if (err) throw err;
     menu();
@@ -88,6 +92,11 @@ function addDepartment(){
 }
 // Add a new department to the database
 function addRole(){
+    connection.query("SELECT * FROM department", function(err,res){
+        res.forEach(function(department){
+            departments.push(department.id + " " + department.name);
+        })
+    })
     inquirer.prompt([
         {
         name: "title",
@@ -101,15 +110,17 @@ function addRole(){
         },       
         {
             name: "department",
-            type: "input",
-            message: "Department id:"
+            type: "list",
+            message: "Department:",
+            choices: departments
         }
         ]).then(function(response){
+          const departmentID = response.department.split(" ")  
         connection.query("INSERT INTO role SET ?",
         {
             title: response.title,
             salary: response.salary,
-            department_id: response.department
+            department_id: departmentID[0]
         })
         inquirer.prompt({
             name: "response",
