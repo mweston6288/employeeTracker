@@ -6,7 +6,7 @@ USE employeesDB;
 
 CREATE TABLE department(
     id INT AUTO_INCREMENT NOT NULL,
-    name VARCHAR(300) NULL,
+    department VARCHAR(300) NULL,
     PRIMARY KEY(id)
 );
 
@@ -27,7 +27,7 @@ CREATE TABLE employee(
     PRIMARY KEY(id)
 );
 
-INSERT INTO department (name)
+INSERT INTO department (department)
 VALUES ("Sales"), ("Tech support");
 
 INSERT INTO role (title, salary, department_id)
@@ -35,9 +35,3 @@ VALUES ("Manager", 15.43, 1), ("manager", 15.43, 2);
 
 INSERT INTO employee(first_name, last_name, role_id, manager_id)
 VALUES ("Larry", "Smith", 2, 1), ("John", "Doe", 1, 1);
-
-
-SELECT first_name,last_name, department.name, role.title FROM employee
-LEFT JOIN role JOIN department 
-ON role.department_id = department.id ON employee.role_id = role.id
-Where role.id = "manager";

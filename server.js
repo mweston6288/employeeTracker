@@ -11,7 +11,7 @@ const connection = mysql.createConnection({
     password: "",
     database: "employeesDB"
 });
-
+// Values that stores strings for department, role, and manager names
 let departments = [];
 let roles = [];
 let managers = [];
@@ -67,13 +67,13 @@ function menu(){
 // Add a new department to the database
 function addDepartment(){
     inquirer.prompt({
-        name: "name",
+        name: "department",
         type: "input",
         message: "Department name:"
     }).then(function(response){
         connection.query("INSERT INTO department SET ?",
         {
-            name: response.name
+            department: response.department
         })
         inquirer.prompt({
             name: "response",
@@ -92,10 +92,10 @@ function addDepartment(){
 }
 // Add a new department to the database
 function addRole(){
+    departments = [];
     connection.query("SELECT * FROM department", function(err,res){
-        departments = [];
         res.forEach(function(department){
-            departments.push(department.id + " " + department.name);
+            departments.push(department.id + " " + department.department);
         })
     })
     inquirer.prompt([
@@ -140,16 +140,16 @@ function addRole(){
 }// Add a new department to the database
 function addEmployee(){
     roles = [];
-    connection.query("SELECT role.id, title, salary, department.name FROM role LEFT JOIN department ON role.department_id = department.id", function(err, response){
+    connection.query("SELECT role.id, title, salary, department.department FROM role LEFT JOIN department ON role.department_id = department.id", function(err, response){
         response.forEach(function(role){
-            roles.push(role.id + " " + role.title+ " " +role.name)
+            roles.push(role.id + " " + role.title+ " " +role.department)
         })
     })
     managers = [];
-    connection.query("SELECT employee.id, first_name, last_name, department.name, role.title FROM employee LEFT JOIN role JOIN department ON role.department_id = department.id ON employee.role_id = role.id Where role.title = 'manager'",
+    connection.query("SELECT employee.id, first_name, last_name, department.department, role.title FROM employee LEFT JOIN role JOIN department ON role.department_id = department.id ON employee.role_id = role.id Where role.title = 'manager'",
     function(err,res){
         res.forEach(function(employee){
-            managers.push(employee.id + " " + employee.first_name + " "+employee.last_name + " "+employee.name);
+            managers.push(employee.id + " " + employee.first_name + " "+employee.last_name + " "+employee.department);
         })        
     })
     inquirer.prompt([
@@ -216,7 +216,7 @@ function viewDepartment(){
 }
 
 function viewRole(){
-    connection.query("SELECT role.id, title, salary, department.name FROM role LEFT JOIN department ON role.department_id = department.id", function(err,res){
+    connection.query("SELECT role.id, title, salary, department.department FROM role LEFT JOIN department ON role.department_id = department.id", function(err,res){
         if(err) throw err;
         console.table('Roles', table.getTable(res))
         inquirer.prompt({
