@@ -1,6 +1,7 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const table = require ("console.table");
+const ascii = require("figlet");
 
 // Connect to the SQL database
 const connection = mysql.createConnection({
@@ -18,8 +19,14 @@ let managers = [];
 
 connection.connect(function(err){
     if (err) throw err;
+    printIntro();
+});
+
+function printIntro(){
+    console.log(ascii.textSync("Employee Tracker"));
     menu();
-})
+}
+
 // Prompt user with a menu
 function menu(){
     inquirer.prompt({
@@ -256,7 +263,6 @@ function updateEmployee(){
             choices: array
         }).then(function(response){
             const empID = response.response.split(" ");
-            console.log(empID)
             inquirer.prompt([
                 {
                     name: "role",
