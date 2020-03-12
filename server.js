@@ -237,7 +237,7 @@ function viewRole(){
 }
 
 function viewEmployee(){
-    connection.query("SELECT employee.id, first_name, last_name, role.title, manager_id FROM employee LEFT JOIN role ON role.id = employee.role_id", function(err,res){
+    connection.query(`SELECT employee.id, first_name as "first name", last_name as "last name", role.title, department.department, manager_id FROM employee LEFT JOIN role JOIN department ON department.id = role.department_id ON role.id = employee.role_id`, function(err,res){
         if(err) throw err;
         console.table('Roles', table.getTable(res))
         inquirer.prompt({
@@ -251,6 +251,19 @@ function viewEmployee(){
 }
 // Needs work. Figure out how to link user id to the arrays
 function updateEmployee(){
+    roles = [];
+    connection.query("SELECT role.id, title, salary, department.department FROM role LEFT JOIN department ON role.department_id = department.id", function(err, response){
+        response.forEach(function(role){
+            roles.push(role.id + " " + role.title+ " " +role.department)
+        })
+    })
+    managers = [];
+    connection.query("SELECT employee.id, first_name, last_name, department.department, role.title FROM employee LEFT JOIN role JOIN department ON role.department_id = department.id ON employee.role_id = role.id Where role.title = 'manager'",
+    function(err,res){
+        res.forEach(function(employee){
+            managers.push(employee.id + " " + employee.first_name + " "+employee.last_name + " "+employee.department);
+        })        
+    })
     connection.query("SELECT employee.id, first_name, last_name FROM employee", function(err,res){
         const array = [];
         res.forEach(function(id){
@@ -266,18 +279,22 @@ function updateEmployee(){
             inquirer.prompt([
                 {
                     name: "role",
-                    message: "What is their role ID?",
-                    type: "input"
+                    message: "What is their role?",
+                    type: "list",
+                    choices: roles
                 },
                 {
                     name: "manager",
-                    message: "What is their manager's ID?",
-                    type: "input"
+                    message: "Who is their manager?",
+                    type: "list",
+                    choices: managers
                 }
             ]).then(function(res){
+                const roleID = res.role.split(" ");
+                const managerID = res.manager.split(" ");
                 connection.query("UPDATE employee SET ? WHERE ?", [{
-                    role_id: res.role,
-                    manager_id: res.manager
+                    role_id: roleID[0],
+                    manager_id: managerID[0]
                 },
                 {
                     id:empID[0]
